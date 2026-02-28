@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>FoodExpress – Order Food Online</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --orange: #FC5A03;
+      --orange-dark: #e04e00;
+      --orange-light: #fff4ef;
+      --orange-mid: #ff7a3d;
+      --black: #1a1a1a;
+      --gray: #686868;
+      --light: #f9f9f9;
+      --white: #ffffff;
+      --border: #ebebeb;
+      --shadow: 0 4px 24px rgba(0,0,0,0.08);
+      --shadow-lg: 0 12px 40px rgba(0,0,0,0.14);
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'DM Sans', sans-serif; background: var(--white); color: var(--black); }
+
+    /* ── NAVBAR ── */
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      background: var(--white);
+      border-bottom: 1px solid var(--border);
+      padding: 0 5%;
+      display: flex; align-items: center; justify-content: space-between;
+      height: 68px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    }
+    .nav-logo { font-family: 'Bricolage Grotesque', sans-serif; font-size: 26px; font-weight: 800; color: var(--orange); text-decoration: none; display: flex; align-items: center; gap: 8px; }
+    .nav-logo span { color: var(--black); }
+    .nav-links { display: flex; align-items: center; gap: 8px; }
+    .nav-links a {
+      text-decoration: none; font-size: 14px; font-weight: 500;
+      color: var(--gray); padding: 8px 14px; border-radius: 8px;
+      transition: all 0.2s;
+    }
+    .nav-links a:hover { color: var(--orange); background: var(--orange-light); }
+    .nav-btn {
+      background: var(--orange); color: white !important;
+      padding: 9px 20px !important; border-radius: 10px !important;
+      font-weight: 600 !important;
+    }
+    .nav-btn:hover { background: var(--orange-dark) !important; color: white !important; }
+    .nav-cart-count {
+      background: var(--orange); color: white;
+      border-radius: 50%; width: 18px; height: 18px;
+      font-size: 11px; display: inline-flex; align-items: center;
+      justify-content: center; margin-left: 4px; font-weight: 700;
+    }
+    #nav-user-name { font-weight: 600; color: var(--black) !important; }
+
+    /* ── HERO ── */
+    .hero {
+      background: linear-gradient(135deg, #1a1a1a 0%, #2d1a0e 50%, #1a1a1a 100%);
+      padding: 80px 5% 0;
+      display: flex; align-items: flex-end; justify-content: space-between;
+      overflow: hidden; position: relative; min-height: 420px;
+    }
+    .hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse at 30% 50%, rgba(252,90,3,0.25) 0%, transparent 60%);
+      pointer-events: none;
+    }
+    .hero-text { z-index: 2; max-width: 520px; padding-bottom: 60px; }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: rgba(252,90,3,0.2); border: 1px solid rgba(252,90,3,0.4);
+      color: #ff9965; padding: 6px 14px; border-radius: 30px;
+      font-size: 13px; font-weight: 500; margin-bottom: 20px;
+    }
+    .hero-badge span { font-size: 16px; }
+    .hero h1 {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: clamp(34px, 5vw, 54px); font-weight: 800;
+      color: white; line-height: 1.1; margin-bottom: 16px;
+    }
+    .hero h1 em { color: var(--orange); font-style: normal; }
+    .hero p { color: #b0b0b0; font-size: 16px; margin-bottom: 32px; line-height: 1.6; }
+    .hero-search {
+      display: flex; background: white; border-radius: 14px;
+      overflow: hidden; box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+      max-width: 480px;
+    }
+    .hero-search input {
+      flex: 1; border: none; outline: none; padding: 16px 20px;
+      font-size: 15px; font-family: 'DM Sans', sans-serif; color: var(--black);
+    }
+    .hero-search button {
+      background: var(--orange); color: white; border: none;
+      padding: 16px 28px; font-size: 15px; font-weight: 600;
+      cursor: pointer; font-family: 'DM Sans', sans-serif;
+      transition: background 0.2s;
+    }
+    .hero-search button:hover { background: var(--orange-dark); }
+    .hero-image {
+      z-index: 2; display: flex; gap: 16px; align-items: flex-end;
+      padding-bottom: 0;
+    }
+    .hero-food-card {
+      background: white; border-radius: 16px 16px 0 0;
+      padding: 16px; width: 140px; text-align: center;
+      box-shadow: 0 -4px 24px rgba(0,0,0,0.2);
+      transform: translateY(0); transition: transform 0.3s;
+    }
+    .hero-food-card:hover { transform: translateY(-8px); }
+    .hero-food-card .emoji { font-size: 44px; margin-bottom: 8px; }
+    .hero-food-card p { font-size: 13px; font-weight: 600; color: var(--black); }
+    .hero-food-card .price { font-size: 12px; color: var(--orange); font-weight: 700; margin-top: 4px; }
+    .hero-food-card.tall { padding-bottom: 28px; }
+
+    /* ── OFFERS ── */
+    .offers-section { padding: 40px 5%; }
+    .offers-section h2 { font-family: 'Bricolage Grotesque', sans-serif; font-size: 22px; font-weight: 700; margin-bottom: 20px; }
+    .offers-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; }
+    .offer-card {
+      border-radius: 16px; padding: 24px; color: white;
+      position: relative; overflow: hidden; cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .offer-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-lg); }
+    .offer-card.orange { background: linear-gradient(135deg, #FC5A03, #ff8c42); }
+    .offer-card.dark { background: linear-gradient(135deg, #1a1a1a, #3d3d3d); }
+    .offer-card.purple { background: linear-gradient(135deg, #6c3fc5, #9b6dff); }
+    .offer-card.teal { background: linear-gradient(135deg, #0f9b8e, #2dd4bf); }
+    .offer-card::after {
+      content: ''; position: absolute; right: -20px; top: -20px;
+      width: 100px; height: 100px; border-radius: 50%;
+      background: rgba(255,255,255,0.1);
+    }
+    .offer-tag { font-size: 11px; font-weight: 700; letter-spacing: 1px; opacity: 0.8; text-transform: uppercase; margin-bottom: 8px; }
+    .offer-title { font-family: 'Bricolage Grotesque', sans-serif; font-size: 22px; font-weight: 800; margin-bottom: 4px; }
+    .offer-sub { font-size: 13px; opacity: 0.85; }
+    .offer-emoji { position: absolute; right: 20px; bottom: 16px; font-size: 36px; }
+
+    /* ── CUISINE FILTER ── */
+    .cuisine-section { padding: 10px 5% 30px; }
+    .cuisine-section h2 { font-family: 'Bricolage Grotesque', sans-serif; font-size: 22px; font-weight: 700; margin-bottom: 20px; }
+    .cuisine-scroll { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 8px; scrollbar-width: none; }
+    .cuisine-scroll::-webkit-scrollbar { display: none; }
+    .cuisine-chip {
+      display: flex; flex-direction: column; align-items: center; gap: 8px;
+      background: var(--white); border: 2px solid var(--border);
+      border-radius: 14px; padding: 14px 18px; cursor: pointer;
+      white-space: nowrap; transition: all 0.2s; flex-shrink: 0;
+      min-width: 80px;
+    }
+    .cuisine-chip:hover, .cuisine-chip.active {
+      border-color: var(--orange); background: var(--orange-light); color: var(--orange);
+    }
+    .cuisine-chip .c-emoji { font-size: 28px; }
+    .cuisine-chip span { font-size: 12px; font-weight: 600; color: var(--gray); }
+    .cuisine-chip.active span, .cuisine-chip:hover span { color: var(--orange); }
+
+    /* ── RESTAURANTS ── */
+    .restaurants-section { padding: 10px 5% 40px; }
+    .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+    .section-header h2 { font-family: 'Bricolage Grotesque', sans-serif; font-size: 22px; font-weight: 700; }
+    .restaurants-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 24px; }
+    .restaurant-card {
+      background: var(--white); border-radius: 18px;
+      overflow: hidden; cursor: pointer;
+      box-shadow: var(--shadow); transition: transform 0.25s, box-shadow 0.25s;
+      border: 1px solid var(--border);
+    }
+    .restaurant-card:hover { transform: translateY(-6px); box-shadow: var(--shadow-lg); }
+    .restaurant-img {
+      height: 160px; display: flex; align-items: center; justify-content: center;
+      font-size: 72px; position: relative;
+    }
+    .restaurant-img.italian { background: linear-gradient(135deg, #fff1e6, #ffd9b3); }
+    .restaurant-img.american { background: linear-gradient(135deg, #e8f4fd, #c5e8ff); }
+    .restaurant-img.indian { background: linear-gradient(135deg, #fff8e1, #ffe082); }
+    .restaurant-img.default { background: linear-gradient(135deg, #f0f4ff, #dce8ff); }
+    .restaurant-badge {
+      position: absolute; top: 12px; left: 12px;
+      background: white; border-radius: 8px; padding: 4px 10px;
+      font-size: 12px; font-weight: 700; color: var(--orange);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    .restaurant-body { padding: 16px 18px 18px; }
+    .restaurant-body h3 { font-family: 'Bricolage Grotesque', sans-serif; font-size: 17px; font-weight: 700; margin-bottom: 4px; }
+    .restaurant-meta { display: flex; gap: 12px; font-size: 13px; color: var(--gray); margin-bottom: 10px; }
+    .restaurant-meta span { display: flex; align-items: center; gap: 4px; }
+    .cuisine-tag {
+      display: inline-block; background: var(--orange-light);
+      color: var(--orange); padding: 3px 10px; border-radius: 6px;
+      font-size: 12px; font-weight: 600;
+    }
+
+    /* ── POPULAR DISHES ── */
+    .popular-section { background: var(--light); padding: 50px 5%; }
+    .popular-section h2 { font-family: 'Bricolage Grotesque', sans-serif; font-size: 22px; font-weight: 700; margin-bottom: 24px; }
+    .popular-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; }
+    .dish-card {
+      background: white; border-radius: 16px; overflow: hidden;
+      box-shadow: var(--shadow); transition: transform 0.2s;
+      cursor: pointer; border: 1px solid var(--border);
+    }
+    .dish-card:hover { transform: translateY(-4px); }
+    .dish-img { height: 120px; display: flex; align-items: center; justify-content: center; font-size: 52px; }
+    .dish-img.bg1 { background: linear-gradient(135deg, #fff1e6, #ffd9b3); }
+    .dish-img.bg2 { background: linear-gradient(135deg, #e8f4fd, #c5e8ff); }
+    .dish-img.bg3 { background: linear-gradient(135deg, #fff8e1, #ffe082); }
+    .dish-img.bg4 { background: linear-gradient(135deg, #f0fff4, #b2f5c8); }
+    .dish-img.bg5 { background: linear-gradient(135deg, #fdf2f8, #f9c6e8); }
+    .dish-img.bg6 { background: linear-gradient(135deg, #f0f4ff, #dce8ff); }
+    .dish-body { padding: 12px 14px; }
+    .dish-body h4 { font-size: 14px; font-weight: 700; margin-bottom: 2px; }
+    .dish-body p { font-size: 12px; color: var(--gray); margin-bottom: 8px; }
+    .dish-footer { display: flex; justify-content: space-between; align-items: center; }
+    .dish-price { font-size: 14px; font-weight: 700; color: var(--orange); }
+    .dish-add { background: var(--orange); color: white; border: none; width: 28px; height: 28px; border-radius: 8px; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.2s; }
+    .dish-add:hover { background: var(--orange-dark); }
+
+    /* ── MENU SECTION ── */
+    .menu-section { display: none; padding: 30px 5%; }
+    .menu-back { display: flex; align-items: center; gap: 8px; background: none; border: none; color: var(--orange); font-size: 15px; font-weight: 600; cursor: pointer; margin-bottom: 24px; font-family: 'DM Sans', sans-serif; }
+    .menu-restaurant-header {
+      background: linear-gradient(135deg, #1a1a1a, #2d1a0e);
+      border-radius: 20px; padding: 30px; margin-bottom: 30px;
+      display: flex; align-items: center; gap: 20px; color: white;
+    }
+    .menu-restaurant-emoji { font-size: 56px; }
+    .menu-restaurant-info h2 { font-family: 'Bricolage Grotesque', sans-serif; font-size: 26px; font-weight: 800; margin-bottom: 6px; }
+    .menu-restaurant-info p { color: #b0b0b0; font-size: 14px; }
+    .menu-restaurant-info .tags { display: flex; gap: 8px; margin-top: 10px; }
+    .menu-restaurant-info .tag { background: rgba(252,90,3,0.2); color: #ff9965; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+    .menu-category-title { font-family: 'Bricolage Grotesque', sans-serif; font-size: 18px; font-weight: 700; margin: 24px 0 14px; padding-left: 4px; border-left: 4px solid var(--orange); padding-left: 12px; }
+    .menu-item {
+      background: white; border-radius: 14px; padding: 18px 20px;
+      margin-bottom: 12px; display: flex; justify-content: space-between;
+      align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+      border: 1px solid var(--border); transition: box-shadow 0.2s;
+    }
+    .menu-item:hover { box-shadow: var(--shadow); }
+    .menu-item-info h4 { font-size: 15px; font-weight: 600; margin-bottom: 4px; }
+    .menu-item-info p { font-size: 13px; color: var(--gray); }
+    .menu-item-right { text-align: right; flex-shrink: 0; margin-left: 16px; }
+    .menu-item-price { font-size: 16px; font-weight: 700; color: var(--orange); margin-bottom: 8px; }
+    .add-btn {
+      background: var(--orange); color: white; border: none;
+      padding: 8px 18px; border-radius: 10px; font-size: 13px;
+      font-weight: 600; cursor: pointer; font-family: 'DM Sans', sans-serif;
+      transition: background 0.2s, transform 0.1s;
+    }
+    .add-btn:hover { background: var(--orange-dark); transform: scale(1.05); }
+
+    /* ── CART BAR ── */
+    .cart-bar {
+      display: none; position: fixed; bottom: 24px;
+      left: 50%; transform: translateX(-50%);
+      background: var(--black); color: white;
+      padding: 16px 28px; border-radius: 16px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+      align-items: center; gap: 20px; z-index: 200;
+      min-width: 320px; animation: slideUp 0.3s ease;
+    }
+    @keyframes slideUp { from { opacity: 0; transform: translateX(-50%) translateY(20px); } to { opacity: 1; transform: translateX(-50%) translateY(0); } }
+    .cart-bar-left { display: flex; align-items: center; gap: 10px; }
+    .cart-bar-count { background: var(--orange); color: white; border-radius: 8px; padding: 2px 10px; font-weight: 700; font-size: 14px; }
+    .cart-bar-text { font-size: 14px; font-weight: 500; }
+    .cart-bar a { background: var(--orange); color: white; text-decoration: none; padding: 10px 22px; border-radius: 10px; font-weight: 700; font-size: 14px; transition: background 0.2s; white-space: nowrap; }
+    .cart-bar a:hover { background: var(--orange-dark); }
+
+    /* ── FOOTER ── */
+    footer { background: var(--black); color: white; padding: 60px 5% 30px; }
+    .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 40px; margin-bottom: 40px; }
+    .footer-brand h2 { font-family: 'Bricolage Grotesque', sans-serif; font-size: 28px; font-weight: 800; color: var(--orange); margin-bottom: 12px; }
+    .footer-brand p { color: #888; font-size: 14px; line-height: 1.7; max-width: 260px; }
+    .footer-col h4 { font-size: 14px; font-weight: 700; margin-bottom: 16px; color: #ccc; letter-spacing: 0.5px; text-transform: uppercase; }
+    .footer-col a { display: block; color: #888; text-decoration: none; font-size: 14px; margin-bottom: 10px; transition: color 0.2s; }
+    .footer-col a:hover { color: var(--orange); }
+    .footer-bottom { border-top: 1px solid #333; padding-top: 24px; display: flex; justify-content: space-between; align-items: center; }
+    .footer-bottom p { color: #666; font-size: 13px; }
+    .footer-socials { display: flex; gap: 12px; }
+    .footer-socials a { color: #666; text-decoration: none; font-size: 20px; transition: color 0.2s; }
+    .footer-socials a:hover { color: var(--orange); }
+
+    /* ── TOAST ── */
+    .toast {
+      position: fixed; bottom: 90px; right: 24px;
+      background: var(--black); color: white;
+      padding: 12px 20px; border-radius: 12px;
+      font-size: 14px; font-weight: 500;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+      z-index: 300; display: none;
+      animation: fadeInOut 2.5s ease forwards;
+    }
+    @keyframes fadeInOut {
+      0% { opacity: 0; transform: translateY(10px); }
+      15% { opacity: 1; transform: translateY(0); }
+      80% { opacity: 1; }
+      100% { opacity: 0; }
+    }
+
+    @media (max-width: 768px) {
+      .hero { padding: 40px 5% 0; flex-direction: column; }
+      .hero-image { display: none; }
+      .footer-grid { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav>
+  <a href="index.html" class="nav-logo">🍔 Food<span>Express</span></a>
+  <div class="nav-links">
+    <a href="about.html">About</a>
+    <a href="orders.html">My Orders</a>
+    <a href="cart.html">🛒 Cart <span class="nav-cart-count" id="cart-count">0</span></a>
+    <a href="login.html" id="nav-login">Login</a>
+    <a href="signup.html" id="nav-signup" class="nav-btn">Sign Up</a>
+    <a href="dashboard.html" id="nav-dashboard" style="display:none"><span id="nav-user-name"></span></a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-text">
+    <div class="hero-badge"><span>🔥</span> 30 min delivery guaranteed</div>
+    <h1>Hungry? We've got<br/><em>delicious food</em><br/>covered.</h1>
+    <p>Order from your favourite local restaurants. Fresh, fast, and always satisfying.</p>
+    <div class="hero-search">
+      <input type="text" id="search-input" placeholder="Search for restaurants or dishes..." oninput="filterContent()"/>
+      <button onclick="filterContent()">Search</button>
+    </div>
+  </div>
+  <div class="hero-image">
+    <div class="hero-food-card">
+      <div class="emoji">🍕</div>
+      <p>Margherita</p>
+      <div class="price">$12.99</div>
+    </div>
+    <div class="hero-food-card tall">
+      <div class="emoji">🍔</div>
+      <p>Classic Burger</p>
+      <div class="price">$9.99</div>
+    </div>
+    <div class="hero-food-card">
+      <div class="emoji">🍛</div>
+      <p>Butter Chicken</p>
+      <div class="price">$13.99</div>
+    </div>
+  </div>
+</section>
+
+<!-- OFFERS -->
+<section class="offers-section">
+  <h2>🎉 Today's Offers</h2>
+  <div class="offers-grid">
+    <div class="offer-card orange">
+      <div class="offer-tag">Limited Time</div>
+      <div class="offer-title">50% OFF</div>
+      <div class="offer-sub">On your first order</div>
+      <div class="offer-emoji">🎊</div>
+    </div>
+    <div class="offer-card dark">
+      <div class="offer-tag">Weekend Special</div>
+      <div class="offer-title">Free Delivery</div>
+      <div class="offer-sub">Orders above $20</div>
+      <div class="offer-emoji">🛵</div>
+    </div>
+    <div class="offer-card purple">
+      <div class="offer-tag">Members Only</div>
+      <div class="offer-title">20% OFF</div>
+      <div class="offer-sub">Every Friday night</div>
+      <div class="offer-emoji">⭐</div>
+    </div>
+    <div class="offer-card teal">
+      <div class="offer-tag">Combo Deal</div>
+      <div class="offer-title">Buy 2 Get 1</div>
+      <div class="offer-sub">On selected items</div>
+      <div class="offer-emoji">🎁</div>
+    </div>
+  </div>
+</section>
+
+<!-- CUISINE FILTER -->
+<section class="cuisine-section">
+  <h2>🍽️ What are you craving?</h2>
+  <div class="cuisine-scroll">
+    <div class="cuisine-chip active" onclick="filterByCuisine('All')">
+      <span class="c-emoji">🍽️</span><span>All</span>
+    </div>
+    <div class="cuisine-chip" onclick="filterByCuisine('Italian')">
+      <span class="c-emoji">🍕</span><span>Italian</span>
+    </div>
+    <div class="cuisine-chip" onclick="filterByCuisine('American')">
+      <span class="c-emoji">🍔</span><span>American</span>
+    </div>
+    <div class="cuisine-chip" onclick="filterByCuisine('Indian')">
+      <span class="c-emoji">🍛</span><span>Indian</span>
+    </div>
+    <div class="cuisine-chip" onclick="filterByCuisine('Chinese')">
+      <span class="c-emoji">🥡</span><span>Chinese</span>
+    </div>
+    <div class="cuisine-chip" onclick="filterByCuisine('Mexican')">
+      <span class="c-emoji">🌮</span><span>Mexican</span>
+    </div>
+    <div class="cuisine-chip" onclick="filterByCuisine('Japanese')">
+      <span class="c-emoji">🍱</span><span>Japanese</span>
+    </div>
+    <div class="cuisine-chip" onclick="filterByCuisine('Desserts')">
+      <span class="c-emoji">🍰</span><span>Desserts</span>
+    </div>
+  </div>
+</section>
+
+<!-- RESTAURANTS -->
+<section class="restaurants-section" id="restaurants-section">
+  <div class="section-header">
+    <h2>🏪 Restaurants near you</h2>
+  </div>
+  <div class="restaurants-grid" id="restaurants-grid">
+    <div style="color:#999; padding:20px">Loading restaurants...</div>
+  </div>
+</section>
+
+<!-- MENU -->
+<section class="menu-section" id="menu-section">
+  <button class="menu-back" onclick="showRestaurants()">← Back to Restaurants</button>
+  <div class="menu-restaurant-header">
+    <div class="menu-restaurant-emoji" id="menu-emoji">🍽️</div>
+    <div class="menu-restaurant-info">
+      <h2 id="menu-restaurant-name"></h2>
+      <p id="menu-restaurant-address"></p>
+      <div class="tags">
+        <span class="tag" id="menu-cuisine-tag"></span>
+        <span class="tag">⭐ 4.2</span>
+        <span class="tag">🕒 30 min</span>
+      </div>
+    </div>
+  </div>
+  <div id="menu-grid"></div>
+</section>
+
+<!-- POPULAR DISHES -->
+<section class="popular-section" id="popular-section">
+  <h2>🔥 Popular Dishes</h2>
+  <div class="popular-grid">
+    <div class="dish-card" onclick="scrollToRestaurant(1)">
+      <div class="dish-img bg1">🍕</div>
+      <div class="dish-body">
+        <h4>Margherita Pizza</h4>
+        <p>Pizza Palace</p>
+        <div class="dish-footer"><span class="dish-price">$12.99</span><button class="dish-add" onclick="event.stopPropagation();loadMenuAndAdd(1,'Pizza Palace','italian')">+</button></div>
+      </div>
+    </div>
+    <div class="dish-card" onclick="scrollToRestaurant(2)">
+      <div class="dish-img bg2">🍔</div>
+      <div class="dish-body">
+        <h4>Classic Burger</h4>
+        <p>Burger Barn</p>
+        <div class="dish-footer"><span class="dish-price">$9.99</span><button class="dish-add" onclick="event.stopPropagation();loadMenuAndAdd(2,'Burger Barn','american')">+</button></div>
+      </div>
+    </div>
+    <div class="dish-card" onclick="scrollToRestaurant(3)">
+      <div class="dish-img bg3">🍛</div>
+      <div class="dish-body">
+        <h4>Butter Chicken</h4>
+        <p>Spice Garden</p>
+        <div class="dish-footer"><span class="dish-price">$13.99</span><button class="dish-add" onclick="event.stopPropagation();loadMenuAndAdd(3,'Spice Garden','indian')">+</button></div>
+      </div>
+    </div>
+    <div class="dish-card">
+      <div class="dish-img bg4">🍝</div>
+      <div class="dish-body">
+        <h4>Garlic Bread</h4>
+        <p>Pizza Palace</p>
+        <div class="dish-footer"><span class="dish-price">$4.99</span><button class="dish-add" onclick="event.stopPropagation();loadMenuAndAdd(1,'Pizza Palace','italian')">+</button></div>
+      </div>
+    </div>
+    <div class="dish-card">
+      <div class="dish-img bg5">🍮</div>
+      <div class="dish-body">
+        <h4>Gulab Jamun</h4>
+        <p>Spice Garden</p>
+        <div class="dish-footer"><span class="dish-price">$4.99</span><button class="dish-add" onclick="event.stopPropagation();loadMenuAndAdd(3,'Spice Garden','indian')">+</button></div>
+      </div>
+    </div>
+    <div class="dish-card">
+      <div class="dish-img bg6">🥤</div>
+      <div class="dish-body">
+        <h4>Chocolate Shake</h4>
+        <p>Burger Barn</p>
+        <div class="dish-footer"><span class="dish-price">$4.99</span><button class="dish-add" onclick="event.stopPropagation();loadMenuAndAdd(2,'Burger Barn','american')">+</button></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <h2>🍔 FoodExpress</h2>
+      <p>Delivering happiness to your doorstep. Fresh food from the best local restaurants, fast.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Company</h4>
+      <a href="about.html">About Us</a>
+      <a href="#">Careers</a>
+      <a href="#">Blog</a>
+      <a href="#">Press</a>
+    </div>
+    <div class="footer-col">
+      <h4>Support</h4>
+      <a href="#">Help Center</a>
+      <a href="#">Safety</a>
+      <a href="#">Terms</a>
+      <a href="#">Privacy</a>
+    </div>
+    <div class="footer-col">
+      <h4>Account</h4>
+      <a href="signup.html">Sign Up</a>
+      <a href="login.html">Login</a>
+      <a href="orders.html">My Orders</a>
+      <a href="dashboard.html">Dashboard</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2026 FoodExpress. All rights reserved.</p>
+    <div class="footer-socials">
+      <a href="#">📘</a><a href="#">📸</a><a href="#">🐦</a>
+    </div>
+  </div>
+</footer>
+
+<!-- CART BAR -->
+<div class="cart-bar" id="cart-bar">
+  <div class="cart-bar-left">
+    <span class="cart-bar-count" id="cart-bar-count">0</span>
+    <span class="cart-bar-text">items in cart</span>
+  </div>
+  <a href="cart.html">View Cart →</a>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+  const API = "http://localhost:8000";
+  let cart = JSON.parse(localStorage.getItem("cart")) || [];
+  let allRestaurants = [];
+  let cuisineFilter = 'All';
+
+  // Auth nav
+  const user = JSON.parse(localStorage.getItem("user"));
+  if (user) {
+    document.getElementById("nav-login").style.display = "none";
+    document.getElementById("nav-signup").style.display = "none";
+    document.getElementById("nav-dashboard").style.display = "inline";
+    document.getElementById("nav-user-name").textContent = "👤 " + user.name.split(" ")[0];
+  }
+
+  function updateCartUI() {
+    const count = cart.reduce((s, i) => s + i.quantity, 0);
+    document.getElementById("cart-count").textContent = count;
+    document.getElementById("cart-bar-count").textContent = count;
+    const bar = document.getElementById("cart-bar");
+    bar.style.display = count > 0 ? "flex" : "none";
+  }
+
+  function showToast(msg) {
+    const t = document.getElementById("toast");
+    t.textContent = msg; t.style.display = "block";
+    setTimeout(() => t.style.display = "none", 2500);
+  }
+
+  const emojiMap = { italian: "🍕", american: "🍔", indian: "🍛", default: "🍽️" };
+
+  async function loadRestaurants() {
+    const res = await fetch(`${API}/restaurants`);
+    allRestaurants = await res.json();
+    renderRestaurants(allRestaurants);
+  }
+
+  function renderRestaurants(list) {
+    const grid = document.getElementById("restaurants-grid");
+    if (!list.length) { grid.innerHTML = `<p style="color:#999">No restaurants found.</p>`; return; }
+    grid.innerHTML = list.map(r => {
+      const cuisineKey = r.cuisine_type.toLowerCase();
+      const emoji = emojiMap[cuisineKey] || emojiMap.default;
+      return `
+        <div class="restaurant-card" onclick="loadMenu(${r.id}, '${r.name}', '${r.address}', '${r.cuisine_type}', '${cuisineKey}')">
+          <div class="restaurant-img ${cuisineKey}">
+            ${emoji}
+            <div class="restaurant-badge">${r.cuisine_type}</div>
+          </div>
+          <div class="restaurant-body">
+            <h3>${r.name}</h3>
+            <div class="restaurant-meta">
+              <span>⭐ 4.2</span>
+              <span>🕒 30 min</span>
+              <span>📍 ${r.address.split(',')[0]}</span>
+            </div>
+            <span class="cuisine-tag">${r.cuisine_type}</span>
+          </div>
+        </div>`;
+    }).join("");
+  }
+
+  function filterByCuisine(cuisine) {
+    cuisineFilter = cuisine;
+    document.querySelectorAll(".cuisine-chip").forEach(c => c.classList.remove("active"));
+    event.currentTarget.classList.add("active");
+    if (cuisine === 'All') { renderRestaurants(allRestaurants); return; }
+    renderRestaurants(allRestaurants.filter(r => r.cuisine_type.toLowerCase() === cuisine.toLowerCase()));
+  }
+
+  function filterContent() {
+    const q = document.getElementById("search-input").value.toLowerCase();
+    if (!q) { renderRestaurants(allRestaurants); return; }
+    renderRestaurants(allRestaurants.filter(r =>
+      r.name.toLowerCase().includes(q) || r.cuisine_type.toLowerCase().includes(q)
+    ));
+    document.getElementById("restaurants-section").scrollIntoView({ behavior: 'smooth' });
+  }
+
+  async function loadMenu(id, name, address, cuisine, cuisineKey) {
+    localStorage.setItem("restaurant_id", id);
+    const res = await fetch(`${API}/menu/${id}`);
+    const items = await res.json();
+
+    document.getElementById("menu-emoji").textContent = emojiMap[cuisineKey] || "🍽️";
+    document.getElementById("menu-restaurant-name").textContent = name;
+    document.getElementById("menu-restaurant-address").textContent = "📍 " + address;
+    document.getElementById("menu-cuisine-tag").textContent = cuisine;
+
+    document.getElementById("restaurants-section").style.display = "none";
+    document.getElementById("popular-section").style.display = "none";
+    document.querySelector(".offers-section").style.display = "none";
+    document.querySelector(".cuisine-section").style.display = "none";
+    document.querySelector(".hero").style.display = "none";
+    document.getElementById("menu-section").style.display = "block";
+
+    const grid = document.getElementById("menu-grid");
+    const categories = [...new Set(items.map(i => i.category))];
+    grid.innerHTML = categories.map(cat => `
+      <div class="menu-category-title">${cat}</div>
+      ${items.filter(i => i.category === cat).map(item => `
+        <div class="menu-item">
+          <div class="menu-item-info">
+            <h4>${item.name}</h4>
+            <p>${item.description || "Fresh and delicious"}</p>
+          </div>
+          <div class="menu-item-right">
+            <div class="menu-item-price">$${item.price}</div>
+            <button class="add-btn" onclick="addToCart(${item.id}, '${item.name}', ${item.price})">+ Add</button>
+          </div>
+        </div>`).join("")}
+    `).join("");
+  }
+
+  function loadMenuAndAdd(id, name, cuisineKey) {
+    const r = allRestaurants.find(r => r.id === id);
+    if (r) loadMenu(r.id, r.name, r.address, r.cuisine_type, cuisineKey);
+    document.getElementById("restaurants-section").scrollIntoView({ behavior: 'smooth' });
+  }
+
+  function showRestaurants() {
+    document.getElementById("menu-section").style.display = "none";
+    document.getElementById("restaurants-section").style.display = "block";
+    document.getElementById("popular-section").style.display = "block";
+    document.querySelector(".offers-section").style.display = "block";
+    document.querySelector(".cuisine-section").style.display = "block";
+    document.querySelector(".hero").style.display = "flex";
+  }
+
+  function addToCart(id, name, price) {
+    const existing = cart.find(i => i.menu_item_id === id);
+    if (existing) existing.quantity += 1;
+    else cart.push({ menu_item_id: id, name, price, quantity: 1 });
+    localStorage.setItem("cart", JSON.stringify(cart));
+    updateCartUI();
+    showToast(`✅ ${name} added to cart!`);
+  }
+
+  loadRestaurants();
+  updateCartUI();
+</script>
+</body>
+</html>

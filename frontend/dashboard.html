@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dashboard — FoodExpress</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root { --orange: #FF5200; --orange-light: #FF6B35; --orange-pale: #FFF3EE; --dark: #1C1C1C; --gray: #686B78; --light-gray: #F4F4F5; --border: #E8E8E8; }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--light-gray); color: var(--dark); }
+
+    nav {
+      background: white; border-bottom: 1px solid var(--border);
+      padding: 0 5%; height: 64px;
+      display: flex; align-items: center; justify-content: space-between;
+      position: sticky; top: 0; z-index: 100;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    }
+    .nav-logo { display: flex; align-items: center; gap: 8px; text-decoration: none; }
+    .nav-logo .logo-icon { width: 36px; height: 36px; background: var(--orange); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; }
+    .nav-logo span { font-size: 20px; font-weight: 800; color: var(--dark); }
+    .nav-logo span em { color: var(--orange); font-style: normal; }
+    .nav-right { display: flex; align-items: center; gap: 10px; }
+    .logout-btn {
+      background: var(--light-gray); color: var(--dark);
+      border: none; padding: 8px 16px; border-radius: 8px;
+      font-size: 13px; font-weight: 600; cursor: pointer;
+      font-family: inherit; transition: all 0.2s;
+    }
+    .logout-btn:hover { background: #FFEBEB; color: #C62828; }
+
+    .container { max-width: 1000px; margin: 0 auto; padding: 32px 20px; }
+
+    /* Welcome Banner */
+    .welcome-banner {
+      background: linear-gradient(135deg, var(--orange) 0%, #FF8C42 100%);
+      border-radius: 20px; padding: 32px 36px; margin-bottom: 28px;
+      display: flex; align-items: center; justify-content: space-between;
+      overflow: hidden; position: relative;
+    }
+    .welcome-banner::before {
+      content: '🍕'; position: absolute; right: 120px; top: -10px;
+      font-size: 80px; opacity: 0.15; transform: rotate(-15deg);
+    }
+    .welcome-banner::after {
+      content: '🍔'; position: absolute; right: 40px; bottom: -15px;
+      font-size: 70px; opacity: 0.15; transform: rotate(10deg);
+    }
+    .welcome-left { position: relative; z-index: 1; }
+    .welcome-left h2 { font-size: 26px; font-weight: 800; color: white; margin-bottom: 6px; }
+    .welcome-left p { color: rgba(255,255,255,0.85); font-size: 14px; }
+    .welcome-avatar {
+      width: 56px; height: 56px;
+      background: rgba(255,255,255,0.25); border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 24px; font-weight: 800; color: white;
+      flex-shrink: 0; position: relative; z-index: 1;
+    }
+
+    /* Stats */
+    .stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 28px; }
+    @media (max-width: 600px) { .stats-row { grid-template-columns: 1fr; } }
+    .stat-card { background: white; border-radius: 14px; padding: 20px 24px; border: 1.5px solid var(--border); }
+    .stat-card .s-label { font-size: 12px; color: var(--gray); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
+    .stat-card .s-value { font-size: 28px; font-weight: 800; color: var(--dark); }
+    .stat-card .s-sub { font-size: 12px; color: var(--orange); font-weight: 600; margin-top: 2px; }
+
+    /* Quick Actions */
+    .actions-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 28px; }
+    @media (max-width: 600px) { .actions-grid { grid-template-columns: repeat(2, 1fr); } }
+    .action-card {
+      background: white; border-radius: 16px; padding: 20px 16px;
+      text-align: center; text-decoration: none; color: var(--dark);
+      border: 1.5px solid var(--border); transition: all 0.2s;
+    }
+    .action-card:hover { border-color: var(--orange); transform: translateY(-3px); box-shadow: 0 6px 20px rgba(255,82,0,0.12); }
+    .action-card .a-icon { font-size: 32px; margin-bottom: 10px; }
+    .action-card h3 { font-size: 14px; font-weight: 700; margin-bottom: 3px; }
+    .action-card p { font-size: 12px; color: var(--gray); }
+
+    /* Orders Section */
+    .section-title {
+      font-size: 18px; font-weight: 800; margin-bottom: 16px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .section-title a { font-size: 13px; color: var(--orange); text-decoration: none; font-weight: 600; }
+
+    .order-card {
+      background: white; border-radius: 16px; margin-bottom: 14px;
+      border: 1.5px solid var(--border); overflow: hidden; transition: all 0.2s;
+    }
+    .order-card:hover { border-color: var(--orange); box-shadow: 0 4px 16px rgba(255,82,0,0.1); }
+    .order-card-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 16px 20px; border-bottom: 1px solid var(--border);
+    }
+    .order-restaurant { display: flex; align-items: center; gap: 12px; }
+    .r-avatar {
+      width: 40px; height: 40px; background: var(--orange-pale);
+      border-radius: 10px; display: flex; align-items: center;
+      justify-content: center; font-size: 20px; flex-shrink: 0;
+    }
+    .order-restaurant h4 { font-size: 15px; font-weight: 700; }
+    .order-restaurant p { font-size: 12px; color: var(--gray); margin-top: 2px; }
+
+    .status-badge {
+      padding: 4px 12px; border-radius: 20px;
+      font-size: 11px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.5px;
+    }
+    .status-badge.pending   { background: #FFF8E1; color: #F57F17; }
+    .status-badge.confirmed { background: #E3F2FD; color: #1565C0; }
+    .status-badge.preparing { background: #FFF3E0; color: #E65100; }
+    .status-badge.delivered { background: #E8F5E9; color: #2E7D32; }
+    .status-badge.cancelled { background: #FFEBEE; color: #C62828; }
+
+    .order-card-body { padding: 12px 20px; }
+    .order-items-list { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
+    .order-item-chip {
+      background: var(--light-gray); padding: 4px 10px;
+      border-radius: 20px; font-size: 12px; font-weight: 600; color: var(--gray);
+    }
+    .order-footer { display: flex; align-items: center; justify-content: space-between; }
+    .order-footer .total { font-size: 16px; font-weight: 800; color: var(--orange); }
+    .order-footer .date { font-size: 12px; color: var(--gray); }
+
+    .empty-orders {
+      background: white; border-radius: 16px; padding: 60px 20px;
+      text-align: center; border: 1.5px solid var(--border);
+    }
+    .empty-orders .e-icon { font-size: 56px; margin-bottom: 14px; }
+    .empty-orders h3 { font-size: 18px; font-weight: 800; margin-bottom: 8px; }
+    .empty-orders p { color: var(--gray); font-size: 14px; margin-bottom: 20px; }
+    .empty-orders a {
+      background: var(--orange); color: white; text-decoration: none;
+      padding: 12px 24px; border-radius: 10px; font-weight: 700; font-size: 14px;
+    }
+
+    .loading { text-align: center; padding: 40px; color: var(--gray); }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">
+    <div class="logo-icon">🍔</div>
+    <span>Food<em>Express</em></span>
+  </a>
+  <div class="nav-right">
+    <span style="font-size:14px;color:var(--gray)" id="nav-greeting"></span>
+    <button class="logout-btn" onclick="logout()">Logout</button>
+  </div>
+</nav>
+
+<div class="container">
+
+  <!-- Welcome Banner -->
+  <div class="welcome-banner">
+    <div class="welcome-left">
+      <h2 id="welcome-text">Welcome back! 👋</h2>
+      <p id="welcome-sub"></p>
+    </div>
+    <div class="welcome-avatar" id="avatar"></div>
+  </div>
+
+  <!-- Stats -->
+  <div class="stats-row">
+    <div class="stat-card">
+      <div class="s-label">Total Orders</div>
+      <div class="s-value" id="stat-orders">—</div>
+      <div class="s-sub">All time</div>
+    </div>
+    <div class="stat-card">
+      <div class="s-label">Total Spent</div>
+      <div class="s-value" id="stat-spent">—</div>
+      <div class="s-sub">Keep ordering!</div>
+    </div>
+    <div class="stat-card">
+      <div class="s-label">Favourite</div>
+      <div class="s-value" id="stat-fav" style="font-size:20px">—</div>
+      <div class="s-sub">Most ordered from</div>
+    </div>
+  </div>
+
+  <!-- Quick Actions -->
+  <div class="actions-grid">
+    <a href="index.html" class="action-card">
+      <div class="a-icon">🍕</div>
+      <h3>Order Food</h3>
+      <p>Browse restaurants</p>
+    </a>
+    <a href="cart.html" class="action-card">
+      <div class="a-icon">🛒</div>
+      <h3>My Cart</h3>
+      <p>View your cart</p>
+    </a>
+    <a href="orders.html" class="action-card">
+      <div class="a-icon">📋</div>
+      <h3>All Orders</h3>
+      <p>Full history</p>
+    </a>
+    <a href="about.html" class="action-card">
+      <div class="a-icon">ℹ️</div>
+      <h3>About</h3>
+      <p>How it works</p>
+    </a>
+  </div>
+
+  <!-- Recent Orders -->
+  <div class="section-title">
+    <span>📋 Recent Orders</span>
+    <a href="orders.html">View all →</a>
+  </div>
+  <div id="orders-container">
+    <div class="loading">Loading your orders...</div>
+  </div>
+
+</div>
+
+<script>
+  const API = "http://localhost:8000";
+  const user = JSON.parse(localStorage.getItem("user"));
+
+  // Redirect if not logged in
+  if (!user) window.location.href = "login.html";
+
+  // Set user info in UI
+  const firstName = user.name.split(" ")[0];
+  document.getElementById("nav-greeting").textContent = `Hi, ${firstName}!`;
+  document.getElementById("welcome-text").textContent = `Welcome back, ${firstName}! 👋`;
+  document.getElementById("welcome-sub").textContent = user.email;
+  document.getElementById("avatar").textContent = user.name.charAt(0).toUpperCase();
+
+  const emojiMap = name =>
+    name?.includes('Pizza') ? '🍕' :
+    name?.includes('Burger') ? '🍔' : '🍛';
+
+  async function loadOrders() {
+    const res = await fetch(`${API}/orders/${user.id}`);
+    const orders = await res.json();
+    const container = document.getElementById("orders-container");
+
+    // Update stats
+    document.getElementById("stat-orders").textContent = orders.length;
+    const totalSpent = orders.reduce((s, o) => s + parseFloat(o.total_amount), 0);
+    document.getElementById("stat-spent").textContent = `$${totalSpent.toFixed(0)}`;
+
+    if (orders.length) {
+      const favMap = {};
+      orders.forEach(o => favMap[o.restaurant_name] = (favMap[o.restaurant_name] || 0) + 1);
+      const fav = Object.entries(favMap).sort((a, b) => b[1] - a[1])[0][0];
+      document.getElementById("stat-fav").textContent = fav.split(" ")[0];
+    }
+
+    // Empty state
+    if (!orders.length) {
+      container.innerHTML = `
+        <div class="empty-orders">
+          <div class="e-icon">🍽️</div>
+          <h3>No orders yet!</h3>
+          <p>You haven't placed any orders. Start by browsing restaurants.</p>
+          <a href="index.html">Order Now</a>
+        </div>`;
+      return;
+    }
+
+    // Show last 5 orders
+    container.innerHTML = orders.slice(0, 5).map(order => `
+      <div class="order-card">
+        <div class="order-card-header">
+          <div class="order-restaurant">
+            <div class="r-avatar">${emojiMap(order.restaurant_name)}</div>
+            <div>
+              <h4>${order.restaurant_name}</h4>
+              <p>Order #${order.order_id}</p>
+            </div>
+          </div>
+          <span class="status-badge ${order.status}">${order.status}</span>
+        </div>
+        <div class="order-card-body">
+          <div class="order-items-list">
+            ${order.items.map(i => `<span class="order-item-chip">${i.name} ×${i.quantity}</span>`).join("")}
+          </div>
+          <div class="order-footer">
+            <span class="total">$${parseFloat(order.total_amount).toFixed(2)}</span>
+            <span class="date">${new Date(order.created_at).toLocaleDateString('en-US', { day:'numeric', month:'short', year:'numeric' })}</span>
+          </div>
+        </div>
+      </div>`).join("");
+  }
+
+  function logout() {
+    localStorage.removeItem("user");
+    localStorage.removeItem("cart");
+    window.location.href = "login.html";
+  }
+
+  loadOrders();
+</script>
+</body>
+</html>

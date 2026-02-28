@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Your Cart — FoodExpress</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --orange: #FF5200; --orange-light: #FF6B35; --orange-pale: #FFF3EE;
+      --dark: #1C1C1C; --gray: #686B78; --light-gray: #F4F4F5; --border: #E8E8E8;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--light-gray); color: var(--dark); }
+    nav {
+      background: white; border-bottom: 1px solid var(--border);
+      padding: 0 5%; height: 64px;
+      display: flex; align-items: center; justify-content: space-between;
+      position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    }
+    .nav-logo { display: flex; align-items: center; gap: 8px; text-decoration: none; }
+    .nav-logo .logo-icon { width: 36px; height: 36px; background: var(--orange); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; }
+    .nav-logo span { font-size: 20px; font-weight: 800; color: var(--dark); }
+    .nav-logo span em { color: var(--orange); font-style: normal; }
+    nav a.back { color: var(--gray); text-decoration: none; font-size: 14px; font-weight: 500; display: flex; align-items: center; gap: 6px; }
+    nav a.back:hover { color: var(--orange); }
+
+    .page { max-width: 1000px; margin: 32px auto; padding: 0 20px; display: grid; grid-template-columns: 1fr 360px; gap: 24px; align-items: start; }
+    @media (max-width: 768px) { .page { grid-template-columns: 1fr; } }
+
+    .card { background: white; border-radius: 16px; overflow: hidden; box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
+    .card-header { padding: 20px 24px; border-bottom: 1px solid var(--border); }
+    .card-header h2 { font-size: 18px; font-weight: 800; }
+    .card-header p { font-size: 13px; color: var(--gray); margin-top: 2px; }
+
+    .cart-item {
+      display: flex; align-items: center; gap: 16px;
+      padding: 16px 24px; border-bottom: 1px solid var(--border);
+      transition: background 0.2s;
+    }
+    .cart-item:hover { background: var(--orange-pale); }
+    .item-emoji { width: 52px; height: 52px; background: var(--orange-pale); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 26px; flex-shrink: 0; }
+    .item-details { flex: 1; }
+    .item-details h4 { font-size: 15px; font-weight: 700; margin-bottom: 3px; }
+    .item-details p { font-size: 13px; color: var(--gray); }
+    .qty-control { display: flex; align-items: center; gap: 10px; background: var(--light-gray); border-radius: 10px; padding: 4px; }
+    .qty-btn { width: 30px; height: 30px; border-radius: 8px; border: none; background: white; cursor: pointer; font-size: 16px; font-weight: 700; display: flex; align-items: center; justify-content: center; transition: all 0.2s; box-shadow: 0 1px 4px rgba(0,0,0,0.1); }
+    .qty-btn:hover { background: var(--orange); color: white; }
+    .qty-num { font-size: 15px; font-weight: 700; min-width: 20px; text-align: center; }
+    .item-price { font-size: 16px; font-weight: 800; min-width: 60px; text-align: right; }
+
+    .empty-cart { padding: 60px 24px; text-align: center; }
+    .empty-cart .empty-icon { font-size: 64px; margin-bottom: 16px; }
+    .empty-cart h3 { font-size: 20px; font-weight: 800; margin-bottom: 8px; }
+    .empty-cart p { color: var(--gray); font-size: 14px; margin-bottom: 24px; }
+    .empty-cart a { background: var(--orange); color: white; text-decoration: none; padding: 12px 28px; border-radius: 10px; font-weight: 700; font-size: 14px; }
+
+    /* Order Summary */
+    .summary-card { background: white; border-radius: 16px; overflow: hidden; box-shadow: 0 2px 12px rgba(0,0,0,0.06); position: sticky; top: 88px; }
+    .summary-card .card-header { background: var(--dark); }
+    .summary-card .card-header h2 { color: white; }
+    .summary-card .card-header p { color: rgba(255,255,255,0.6); }
+    .summary-body { padding: 20px 24px; }
+    .summary-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; font-size: 14px; color: var(--gray); }
+    .summary-row.total { font-size: 17px; font-weight: 800; color: var(--dark); border-top: 1px solid var(--border); padding-top: 12px; margin-top: 4px; }
+    .summary-row.total span:last-child { color: var(--orange); }
+    .input-group { margin-bottom: 14px; }
+    .input-group label { font-size: 12px; font-weight: 700; color: var(--gray); text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-bottom: 6px; }
+    .input-group input {
+      width: 100%; padding: 11px 14px; border: 1.5px solid var(--border);
+      border-radius: 10px; font-size: 14px; font-family: inherit; outline: none;
+      transition: border-color 0.2s;
+    }
+    .input-group input:focus { border-color: var(--orange); }
+    .place-btn {
+      width: 100%; background: var(--orange); color: white;
+      border: none; padding: 14px; border-radius: 12px;
+      font-size: 16px; font-weight: 800; cursor: pointer;
+      font-family: inherit; transition: all 0.2s; margin-top: 8px;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+    }
+    .place-btn:hover { background: var(--orange-light); transform: translateY(-1px); box-shadow: 0 4px 16px rgba(255,82,0,0.3); }
+    .place-btn:disabled { background: #ccc; cursor: not-allowed; transform: none; box-shadow: none; }
+
+    .success-banner {
+      display: none; background: linear-gradient(135deg, #00C851, #007E33);
+      color: white; padding: 20px 24px; text-align: center; border-radius: 12px; margin-bottom: 16px;
+    }
+    .success-banner h3 { font-size: 18px; font-weight: 800; margin-bottom: 4px; }
+    .success-banner p { font-size: 13px; opacity: 0.9; }
+
+    .offer-badge { background: var(--orange-pale); border: 1px dashed var(--orange); border-radius: 8px; padding: 10px 14px; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--orange); font-weight: 600; }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">
+    <div class="logo-icon">🍔</div>
+    <span>Food<em>Express</em></span>
+  </a>
+  <a href="index.html" class="back">← Continue Ordering</a>
+</nav>
+
+<div class="page">
+  <!-- Cart Items -->
+  <div>
+    <div class="card" id="cart-card">
+      <div class="card-header">
+        <h2>🛒 Your Cart</h2>
+        <p id="cart-subtitle">Loading...</p>
+      </div>
+      <div id="cart-items-container"></div>
+    </div>
+  </div>
+
+  <!-- Order Summary -->
+  <div>
+    <div id="success-banner" class="success-banner">
+      <h3>🎉 Order Placed!</h3>
+      <p id="success-detail"></p>
+    </div>
+    <div class="summary-card">
+      <div class="card-header">
+        <h2>Order Summary</h2>
+        <p>Review before placing</p>
+      </div>
+      <div class="summary-body" id="summary-body">
+        <div class="offer-badge">🏷️ 50% OFF on your first order!</div>
+        <div class="summary-row"><span>Subtotal</span><span id="subtotal">$0.00</span></div>
+        <div class="summary-row"><span>Delivery fee</span><span style="color:#00C851">FREE</span></div>
+        <div class="summary-row"><span>Taxes</span><span id="taxes">$0.00</span></div>
+        <div class="summary-row total"><span>Total</span><span id="total">$0.00</span></div>
+
+        <div class="input-group" style="margin-top:16px">
+          <label>Customer ID</label>
+          <input type="number" id="customer-id" placeholder="Enter your customer ID" />
+        </div>
+
+        <button class="place-btn" id="place-btn" onclick="placeOrder()">
+          🍕 Place Order
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const API = "http://localhost:8000";
+  let cart = JSON.parse(localStorage.getItem("cart")) || [];
+  const user = JSON.parse(localStorage.getItem("user"));
+  if (user) document.getElementById("customer-id").value = user.id;
+
+  const itemEmojis = ['🍕','🍔','🍛','🥗','🍟','🍮','🥤','🍞','🌮'];
+
+  function renderCart() {
+    const container = document.getElementById("cart-items-container");
+    const subtitle = document.getElementById("cart-subtitle");
+
+    if (!cart.length) {
+      subtitle.textContent = "Your cart is empty";
+      container.innerHTML = `
+        <div class="empty-cart">
+          <div class="empty-icon">🛒</div>
+          <h3>Your cart is empty</h3>
+          <p>Looks like you haven't added anything yet.</p>
+          <a href="index.html">Browse Restaurants</a>
+        </div>`;
+      document.getElementById("subtotal").textContent = "$0.00";
+      document.getElementById("taxes").textContent = "$0.00";
+      document.getElementById("total").textContent = "$0.00";
+      return;
+    }
+
+    const itemCount = cart.reduce((s, i) => s + i.quantity, 0);
+    subtitle.textContent = `${itemCount} item${itemCount !== 1 ? 's' : ''} in your cart`;
+
+    container.innerHTML = cart.map((item, idx) => `
+      <div class="cart-item">
+        <div class="item-emoji">${itemEmojis[idx % itemEmojis.length]}</div>
+        <div class="item-details">
+          <h4>${item.name}</h4>
+          <p>$${parseFloat(item.price).toFixed(2)} each</p>
+        </div>
+        <div class="qty-control">
+          <button class="qty-btn" onclick="changeQty(${idx}, -1)">−</button>
+          <span class="qty-num">${item.quantity}</span>
+          <button class="qty-btn" onclick="changeQty(${idx}, 1)">+</button>
+        </div>
+        <div class="item-price">$${(item.price * item.quantity).toFixed(2)}</div>
+      </div>`).join("");
+
+    const subtotal = cart.reduce((s, i) => s + i.price * i.quantity, 0);
+    const taxes = subtotal * 0.05;
+    const total = subtotal + taxes;
+    document.getElementById("subtotal").textContent = `$${subtotal.toFixed(2)}`;
+    document.getElementById("taxes").textContent = `$${taxes.toFixed(2)}`;
+    document.getElementById("total").textContent = `$${total.toFixed(2)}`;
+  }
+
+  function changeQty(idx, delta) {
+    cart[idx].quantity += delta;
+    if (cart[idx].quantity <= 0) cart.splice(idx, 1);
+    localStorage.setItem("cart", JSON.stringify(cart));
+    renderCart();
+  }
+
+  async function placeOrder() {
+    const customerId = document.getElementById("customer-id").value;
+    const restaurantId = localStorage.getItem("restaurant_id");
+    if (!customerId) return alert("Please enter your Customer ID");
+    if (!restaurantId) return alert("No restaurant selected. Go back and pick one!");
+    if (!cart.length) return alert("Your cart is empty!");
+
+    const btn = document.getElementById("place-btn");
+    btn.disabled = true;
+    btn.textContent = "Placing order...";
+
+    const res = await fetch(`${API}/orders`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        customer_id: parseInt(customerId),
+        restaurant_id: parseInt(restaurantId),
+        items: cart.map(i => ({ menu_item_id: i.menu_item_id, quantity: i.quantity }))
+      })
+    });
+
+    const data = await res.json();
+    if (res.ok) {
+      localStorage.removeItem("cart");
+      cart = [];
+      const banner = document.getElementById("success-banner");
+      banner.style.display = "block";
+      document.getElementById("success-detail").textContent = `Order #${data.order_id} · Total $${parseFloat(data.total).toFixed(2)} · Estimated 25-30 min`;
+      renderCart();
+      btn.textContent = "✓ Order Placed!";
+      btn.style.background = "#00C851";
+    } else {
+      alert("Error: " + data.detail);
+      btn.disabled = false;
+      btn.innerHTML = "🍕 Place Order";
+    }
+  }
+
+  renderCart();
+</script>
+</body>
+</html>

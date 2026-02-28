@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sign Up — FoodExpress</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root { --orange: #FF5200; --orange-pale: #FFF3EE; --dark: #1C1C1C; --gray: #686B78; --border: #E8E8E8; --light-gray: #F4F4F5; }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--light-gray); min-height: 100vh; display: flex; flex-direction: column; }
+
+    nav { background: white; border-bottom: 1px solid var(--border); padding: 0 5%; height: 64px; display: flex; align-items: center; justify-content: space-between; }
+    .nav-logo { display: flex; align-items: center; gap: 8px; text-decoration: none; }
+    .nav-logo .logo-icon { width: 36px; height: 36px; background: var(--orange); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; }
+    .nav-logo span { font-size: 20px; font-weight: 800; color: var(--dark); }
+    .nav-logo span em { color: var(--orange); font-style: normal; }
+
+    .page { flex: 1; display: flex; align-items: center; justify-content: center; padding: 40px 20px; }
+    .form-card { background: white; border-radius: 20px; padding: 40px; width: 100%; max-width: 480px; box-shadow: 0 4px 24px rgba(0,0,0,0.08); }
+
+    .form-top { text-align: center; margin-bottom: 28px; }
+    .form-top .top-icon { width: 64px; height: 64px; background: var(--orange-pale); border-radius: 20px; display: flex; align-items: center; justify-content: center; font-size: 32px; margin: 0 auto 16px; }
+    .form-top h2 { font-size: 26px; font-weight: 800; margin-bottom: 6px; }
+    .form-top p { color: var(--gray); font-size: 14px; }
+
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .form-grid .full { grid-column: 1 / -1; }
+
+    .input-group label { font-size: 12px; font-weight: 700; color: var(--gray); text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-bottom: 6px; }
+    .input-group input {
+      width: 100%; padding: 11px 14px; border: 1.5px solid var(--border);
+      border-radius: 10px; font-size: 14px; font-family: inherit;
+      outline: none; transition: all 0.2s; color: var(--dark);
+    }
+    .input-group input:focus { border-color: var(--orange); box-shadow: 0 0 0 3px rgba(255,82,0,0.08); }
+
+    .btn { width: 100%; background: var(--orange); color: white; border: none; padding: 14px; border-radius: 12px; font-size: 15px; font-weight: 800; cursor: pointer; font-family: inherit; transition: all 0.2s; margin-top: 20px; }
+    .btn:hover { background: #FF6B35; transform: translateY(-1px); box-shadow: 0 4px 16px rgba(255,82,0,0.3); }
+
+    .bottom { text-align: center; margin-top: 20px; font-size: 14px; color: var(--gray); }
+    .bottom a { color: var(--orange); text-decoration: none; font-weight: 700; }
+
+    .alert { padding: 10px 14px; border-radius: 8px; margin-bottom: 16px; font-size: 13px; display: none; }
+    .alert.error { background: #FFF0F0; border: 1px solid #FFCDD2; color: #C62828; }
+    .alert.success { background: #F0FFF4; border: 1px solid #C6F6D5; color: #276749; }
+    .alert.show { display: block; }
+
+    .password-hint { font-size: 11px; color: var(--gray); margin-top: 4px; }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">
+    <div class="logo-icon">🍔</div>
+    <span>Food<em>Express</em></span>
+  </a>
+  <a href="login.html" style="color:var(--orange);text-decoration:none;font-weight:700;font-size:14px">Already a member? Login →</a>
+</nav>
+
+<div class="page">
+  <div class="form-card">
+    <div class="form-top">
+      <div class="top-icon">🍔</div>
+      <h2>Create your account</h2>
+      <p>Join thousands of happy customers ordering daily</p>
+    </div>
+
+    <div class="alert error" id="error-msg"></div>
+    <div class="alert success" id="success-msg"></div>
+
+    <div class="form-grid">
+      <div class="input-group full">
+        <label>Full Name</label>
+        <input type="text" id="name" placeholder="Nakshatra Shinde" />
+      </div>
+      <div class="input-group full">
+        <label>Email Address</label>
+        <input type="email" id="email" placeholder="you@example.com" />
+      </div>
+      <div class="input-group">
+        <label>Phone</label>
+        <input type="text" id="phone" placeholder="9876543210" />
+      </div>
+      <div class="input-group">
+        <label>City</label>
+        <input type="text" id="address" placeholder="Pune, Maharashtra" />
+      </div>
+      <div class="input-group full">
+        <label>Password</label>
+        <input type="password" id="password" placeholder="Min. 6 characters" />
+        <p class="password-hint">Use at least 6 characters with letters and numbers</p>
+      </div>
+    </div>
+
+    <button class="btn" onclick="signup()">Create Free Account 🚀</button>
+    <div class="bottom">Already have an account? <a href="login.html">Login here</a></div>
+  </div>
+</div>
+
+<script>
+  const API = "http://localhost:8000";
+
+  async function signup() {
+    const name = document.getElementById("name").value.trim();
+    const email = document.getElementById("email").value.trim();
+    const phone = document.getElementById("phone").value.trim();
+    const address = document.getElementById("address").value.trim();
+    const password = document.getElementById("password").value;
+
+    if (!name || !email || !password) return showAlert("error", "Name, email and password are required!");
+    if (password.length < 6) return showAlert("error", "Password must be at least 6 characters.");
+
+    const res = await fetch(`${API}/signup`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name, email, phone, address, password })
+    });
+    const data = await res.json();
+    if (res.ok) {
+      showAlert("success", "🎉 Account created! Redirecting to login...");
+      setTimeout(() => window.location.href = "login.html", 1500);
+    } else {
+      showAlert("error", data.detail || "Signup failed. Please try again.");
+    }
+  }
+
+  function showAlert(type, msg) {
+    document.getElementById("error-msg").classList.remove("show");
+    document.getElementById("success-msg").classList.remove("show");
+    const el = document.getElementById(`${type}-msg`);
+    el.textContent = msg;
+    el.classList.add("show");
+  }
+</script>
+</body>
+</html>

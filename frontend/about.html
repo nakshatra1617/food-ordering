@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>About — FoodExpress</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root { --orange: #FF5200; --orange-light: #FF6B35; --orange-pale: #FFF3EE; --dark: #1C1C1C; --gray: #686B78; --light-gray: #F4F4F5; --border: #E8E8E8; }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Plus Jakarta Sans', sans-serif; color: var(--dark); }
+    nav { background: white; border-bottom: 1px solid var(--border); padding: 0 5%; height: 64px; display: flex; align-items: center; justify-content: space-between; position: sticky; top:0; z-index:100; box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
+    .nav-logo { display: flex; align-items: center; gap: 8px; text-decoration: none; }
+    .nav-logo .logo-icon { width: 36px; height: 36px; background: var(--orange); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; }
+    .nav-logo span { font-size: 20px; font-weight: 800; color: var(--dark); }
+    .nav-logo span em { color: var(--orange); font-style: normal; }
+    nav a { color: var(--gray); text-decoration: none; font-size: 14px; font-weight: 500; }
+    nav a:hover { color: var(--orange); }
+    .nav-cta { background: var(--orange); color: white !important; padding: 8px 18px; border-radius: 8px; }
+
+    /* Hero */
+    .hero {
+      background: linear-gradient(135deg, var(--dark) 0%, #2D2D2D 100%);
+      padding: 80px 5%; text-align: center; position: relative; overflow: hidden;
+    }
+    .hero::before { content: '🍕'; position: absolute; top: 20px; left: 8%; font-size: 60px; opacity: 0.1; transform: rotate(-20deg); }
+    .hero::after { content: '🍔'; position: absolute; bottom: 20px; right: 8%; font-size: 60px; opacity: 0.1; transform: rotate(15deg); }
+    .hero-badge { display: inline-block; background: var(--orange); color: white; padding: 5px 16px; border-radius: 20px; font-size: 12px; font-weight: 700; margin-bottom: 20px; }
+    .hero h1 { font-size: clamp(28px, 5vw, 48px); font-weight: 800; color: white; margin-bottom: 16px; line-height: 1.2; }
+    .hero h1 span { color: var(--orange); }
+    .hero p { font-size: 17px; color: rgba(255,255,255,0.7); max-width: 520px; margin: 0 auto 32px; line-height: 1.7; }
+    .hero-btns { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+    .btn-primary { background: var(--orange); color: white; text-decoration: none; padding: 13px 28px; border-radius: 10px; font-weight: 700; font-size: 14px; transition: all 0.2s; }
+    .btn-primary:hover { background: var(--orange-light); transform: translateY(-1px); }
+    .btn-secondary { background: rgba(255,255,255,0.1); color: white; text-decoration: none; padding: 13px 28px; border-radius: 10px; font-weight: 700; font-size: 14px; border: 1.5px solid rgba(255,255,255,0.2); transition: all 0.2s; }
+    .btn-secondary:hover { background: rgba(255,255,255,0.2); }
+
+    /* Stats bar */
+    .stats-bar { background: var(--orange); padding: 24px 5%; display: flex; justify-content: center; gap: 60px; flex-wrap: wrap; }
+    .stat { text-align: center; }
+    .stat strong { display: block; font-size: 28px; font-weight: 800; color: white; }
+    .stat span { font-size: 13px; color: rgba(255,255,255,0.8); font-weight: 500; }
+
+    /* How it works */
+    .section { padding: 72px 5%; }
+    .section-label { text-align: center; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: var(--orange); margin-bottom: 12px; }
+    .section-title { text-align: center; font-size: clamp(22px, 4vw, 36px); font-weight: 800; margin-bottom: 12px; letter-spacing: -0.5px; }
+    .section-sub { text-align: center; color: var(--gray); font-size: 15px; max-width: 500px; margin: 0 auto 48px; line-height: 1.7; }
+
+    .steps-container { max-width: 900px; margin: 0 auto; }
+    .step-row { display: flex; align-items: center; gap: 40px; margin-bottom: 48px; }
+    .step-row:nth-child(even) { flex-direction: row-reverse; }
+    .step-visual {
+      width: 180px; height: 180px; border-radius: 24px; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center; font-size: 72px;
+    }
+    .step-visual.s1 { background: linear-gradient(135deg, #FFF3E0, #FFE0B2); }
+    .step-visual.s2 { background: linear-gradient(135deg, #E8F5E9, #C8E6C9); }
+    .step-visual.s3 { background: linear-gradient(135deg, #E3F2FD, #BBDEFB); }
+    .step-visual.s4 { background: linear-gradient(135deg, #F3E5F5, #E1BEE7); }
+    .step-content { flex: 1; }
+    .step-number { display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; background: var(--orange); color: white; border-radius: 50%; font-size: 14px; font-weight: 800; margin-bottom: 14px; }
+    .step-content h3 { font-size: 22px; font-weight: 800; margin-bottom: 10px; }
+    .step-content p { color: var(--gray); font-size: 15px; line-height: 1.7; }
+
+    @media (max-width: 640px) { .step-row, .step-row:nth-child(even) { flex-direction: column; } .step-visual { width: 120px; height: 120px; font-size: 50px; } }
+
+    /* Why choose us */
+    .features-section { background: var(--light-gray); padding: 72px 5%; }
+    .features-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 20px; max-width: 1000px; margin: 0 auto; }
+    .feature-card { background: white; border-radius: 16px; padding: 28px 24px; border: 1.5px solid var(--border); transition: all 0.2s; }
+    .feature-card:hover { border-color: var(--orange); transform: translateY(-3px); box-shadow: 0 6px 20px rgba(255,82,0,0.1); }
+    .feature-card .f-icon { font-size: 36px; margin-bottom: 14px; }
+    .feature-card h3 { font-size: 16px; font-weight: 700; margin-bottom: 8px; }
+    .feature-card p { font-size: 13px; color: var(--gray); line-height: 1.6; }
+
+    /* CTA */
+    .cta-section {
+      background: linear-gradient(135deg, var(--orange) 0%, #FF8C42 100%);
+      padding: 72px 5%; text-align: center;
+    }
+    .cta-section h2 { font-size: 32px; font-weight: 800; color: white; margin-bottom: 12px; }
+    .cta-section p { color: rgba(255,255,255,0.85); font-size: 16px; margin-bottom: 28px; }
+    .cta-section a { background: white; color: var(--orange); text-decoration: none; padding: 14px 32px; border-radius: 12px; font-weight: 800; font-size: 15px; transition: all 0.2s; display: inline-block; }
+    .cta-section a:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.15); }
+
+    /* Footer */
+    footer { background: var(--dark); color: white; padding: 40px 5% 20px; }
+    .footer-bottom { border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px; display: flex; justify-content: space-between; align-items: center; font-size: 13px; color: rgba(255,255,255,0.4); }
+    .footer-bottom span { color: var(--orange); }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">
+    <div class="logo-icon">🍔</div>
+    <span>Food<em>Express</em></span>
+  </a>
+  <div style="display:flex;gap:16px;align-items:center">
+    <a href="index.html">Home</a>
+    <a href="signup.html" class="nav-cta">Get Started</a>
+  </div>
+</nav>
+
+<!-- Hero -->
+<div class="hero">
+  <div class="hero-badge">🍔 About FoodExpress</div>
+  <h1>Bringing <span>great food</span> closer to you</h1>
+  <p>We connect hungry people with the best local restaurants. Fast, fresh, and always delicious — that's our promise.</p>
+  <div class="hero-btns">
+    <a href="signup.html" class="btn-primary">Start Ordering 🚀</a>
+    <a href="index.html" class="btn-secondary">Browse Restaurants</a>
+  </div>
+</div>
+
+<!-- Stats Bar -->
+<div class="stats-bar">
+  <div class="stat"><strong>3+</strong><span>Restaurants</span></div>
+  <div class="stat"><strong>9+</strong><span>Menu Items</span></div>
+  <div class="stat"><strong>30 min</strong><span>Avg Delivery</span></div>
+  <div class="stat"><strong>100%</strong><span>Fresh Food</span></div>
+</div>
+
+<!-- How it works -->
+<div class="section">
+  <div class="section-label">How It Works</div>
+  <div class="section-title">Order in 4 simple steps</div>
+  <div class="section-sub">From browsing to doorstep delivery — we've made ordering food as easy as possible.</div>
+
+  <div class="steps-container">
+    <div class="step-row">
+      <div class="step-visual s1">🏪</div>
+      <div class="step-content">
+        <div class="step-number">1</div>
+        <h3>Browse Restaurants</h3>
+        <p>Explore our handpicked selection of local restaurants across Italian, Indian, American and more cuisines. Filter by your cravings and find the perfect match.</p>
+      </div>
+    </div>
+
+    <div class="step-row">
+      <div class="step-visual s2">🍽️</div>
+      <div class="step-content">
+        <div class="step-number">2</div>
+        <h3>Pick Your Food</h3>
+        <p>Browse full menus with detailed descriptions and prices. Add your favourite dishes to the cart — starters, mains, desserts and drinks all in one place.</p>
+      </div>
+    </div>
+
+    <div class="step-row">
+      <div class="step-visual s3">🛒</div>
+      <div class="step-content">
+        <div class="step-number">3</div>
+        <h3>Place Your Order</h3>
+        <p>Review your cart, check the order summary with taxes and delivery charges, then place your order with a single click. It's that simple!</p>
+      </div>
+    </div>
+
+    <div class="step-row">
+      <div class="step-visual s4">🚚</div>
+      <div class="step-content">
+        <div class="step-number">4</div>
+        <h3>Track & Enjoy</h3>
+        <p>Monitor your order status in real time — from confirmed to preparing to delivered. Every order is saved in your history so you can reorder your favourites anytime.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Why us -->
+<div class="features-section">
+  <div class="section-label">Why FoodExpress</div>
+  <div class="section-title">Built for food lovers</div>
+  <div class="section-sub">Everything we do is designed to get great food to you faster and easier.</div>
+
+  <div class="features-grid">
+    <div class="feature-card"><div class="f-icon">⚡</div><h3>Lightning Fast</h3><p>30-minute guaranteed delivery from top local restaurants right to your door.</p></div>
+    <div class="feature-card"><div class="f-icon">🔒</div><h3>Secure & Safe</h3><p>Your account is protected with hashed passwords and secure data storage.</p></div>
+    <div class="feature-card"><div class="f-icon">📋</div><h3>Full Order History</h3><p>Every order you place is saved. View, track and reorder your favourites anytime.</p></div>
+    <div class="feature-card"><div class="f-icon">🏷️</div><h3>Great Deals</h3><p>Exclusive discounts and offers for FoodExpress members on every order.</p></div>
+    <div class="feature-card"><div class="f-icon">🍽️</div><h3>Diverse Cuisines</h3><p>Italian, American, Indian and more — something delicious for every craving.</p></div>
+    <div class="feature-card"><div class="f-icon">📱</div><h3>Easy to Use</h3><p>A clean, intuitive interface that makes ordering food quick and enjoyable.</p></div>
+  </div>
+</div>
+
+<!-- CTA -->
+<div class="cta-section">
+  <h2>Ready to order? 🍕</h2>
+  <p>Join today and get 50% off on your first order. No delivery charges!</p>
+  <a href="signup.html">Create Free Account →</a>
+</div>
+
+<footer>
+  <div class="footer-bottom">
+    <p>© 2026 <span>FoodExpress</span>. All rights reserved.</p>
+    <p>Made with ❤️ for food lovers</p>
+  </div>
+</footer>
+
+</body>
+</html>
